@@ -6,20 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('organization_snapshots', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->foreignId('organization_id')->constrained()->cascadeOnDelete();
+            $table->decimal('rating_avg', 2, 1)->nullable();
+            $table->unsignedInteger('ratings_count')->nullable();
+            $table->unsignedInteger('reviews_count')->nullable();
+            $table->timestamp('captured_at');
+
+            $table->index(['organization_id', 'captured_at']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('organization_snapshots');
