@@ -1,11 +1,9 @@
-# OS / editors
 .DS_Store
 Thumbs.db
 .idea
 .vscode
 .zed
 
-# Backend (Laravel)
 backend/vendor
 backend/node_modules
 backend/.env
@@ -40,7 +38,6 @@ backend/bootstrap/cache/*
 !backend/bootstrap/cache/.gitkeep
 *.log
 
-# Frontend (Vue/Vite)
 frontend/node_modules
 frontend/dist
 frontend/.env.local
