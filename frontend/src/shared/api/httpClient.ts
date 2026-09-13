@@ -1,8 +1,7 @@
 import axios from 'axios'
+import { BACKEND_URL } from '@/shared/config/env'
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000'
-
-export const apiClient = axios.create({
+export const httpClient = axios.create({
   baseURL: `${BACKEND_URL}/api`,
   withCredentials: true,
   withXSRFToken: true,
@@ -11,6 +10,6 @@ export const apiClient = axios.create({
   },
 })
 
-export async function ensureCsrfCookie() {
+export async function ensureCsrfCookie(): Promise<void> {
   await axios.get(`${BACKEND_URL}/sanctum/csrf-cookie`, { withCredentials: true })
 }
