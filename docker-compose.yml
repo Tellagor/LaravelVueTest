@@ -1,0 +1,55 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build: ./backend
+    restart: unless-stopped
+    volumes:
+      - backend_data:/var/www/html
+    env_file: ./backend/.env
+    depends_on:
+      - mysql
+
+  queue:
+    build: ./backend
+    restart: unless-stopped
+    volumes:
+      - backend_data:/var/www/html
+    env_file: ./backend/.env
+    command: php artisan queue:work --tries=3 --sleep=3
+    depends_on:
+      - mysql
+      - app
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - backend_data:/var/www/html:ro
+      - ./backend/docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_BACKEND_URL: ${FRONTEND_BACKEND_URL}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+
+volumes:
+  backend_data:
+  mysql_data:
