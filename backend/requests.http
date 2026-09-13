@@ -1,0 +1,40 @@
+@baseUrl = http://localhost:8000
+@xsrfToken = eyJpdiI6InlLcHdHb3VxMlNvQU9VUjVxZnRVOFE9PSIsInZhbHVlIjoiNlpxUmxOQ0d5encwb0YvZ0xvdDgxejQ1a1NxVzA5eWQxaXNtSjZDZ1NPUmtSS3BBSnNCaXpiZVdFSG4rWlVBZ2hpemxGYTlrYk1BRlJYMjZJWXB4MHVkYWFjd2JaUGk3K2RhaG1lNUdjL0VLMjl0OGJ1eFZiTzV6Zzk0YlFVQ28iLCJtYWMiOiI2NGVjMWRiYjQwMWM0MmZjYzBiMmVhZGE0ODZkZDE3NjdmZDk3YzkwMzkzYmQ3MWNlNDlmZWQzZjUyOGJjZjVhIiwidGFnIjoiIn0=
+
+GET {{baseUrl}}/sanctum/csrf-cookie
+Origin: http://localhost:5173
+
+POST {{baseUrl}}/api/login
+Origin: http://localhost:5173
+Content-Type: application/json
+Accept: application/json
+X-XSRF-TOKEN: {{xsrfToken}}
+
+{
+  "email": "test@example.com",
+  "password": "password"
+}
+
+POST {{baseUrl}}/api/organization
+Origin: http://localhost:5173
+Content-Type: application/json
+Accept: application/json
+X-XSRF-TOKEN: {{xsrfToken}}
+
+{
+  "yandex_url": "https://example.com/foo"
+}
+
+POST {{baseUrl}}/api/organization
+Origin: http://localhost:5173
+Content-Type: application/json
+Accept: application/json
+X-XSRF-TOKEN: {{xsrfToken}}
+
+{
+  "yandex_url": "https://yandex.ru/maps/org/kinoteatr_mir/1042189213/"
+}
+
+GET {{baseUrl}}/api/organization
+Origin: http://localhost:5173
+Accept: application/json
