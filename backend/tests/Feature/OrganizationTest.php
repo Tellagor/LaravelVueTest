@@ -2,15 +2,24 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\ParseOrganizationReviews;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class OrganizationTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Bus::fake();
+    }
 
     public function test_guest_cannot_access_organization_endpoints(): void
     {
@@ -59,6 +68,20 @@ class OrganizationTest extends TestCase
             'yandex_id' => '1042189213',
             'status' => 'pending',
         ]);
+
+        Bus::assertDispatched(
+            ParseOrganizationReviews::class,
+            fn (ParseOrganizationReviews $job) => $job->organization->yandex_id === '1042189213',
+        );
+    }
+
+    public function test_it_rejects_missing_url_and_does_not_dispatch_a_parse_job(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+
+        $this->postJson('/api/organization', [])->assertUnprocessable();
+
+        Bus::assertNotDispatched(ParseOrganizationReviews::class);
     }
 
     public function test_resubmitting_the_same_organization_updates_instead_of_duplicating(): void

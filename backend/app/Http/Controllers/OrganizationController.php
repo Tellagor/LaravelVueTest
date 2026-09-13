@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrganizationRequest;
+use App\Jobs\ParseOrganizationReviews;
 use App\Models\Organization;
 use App\Services\YandexMaps\OrganizationUrlParser;
 use Illuminate\Http\Request;
@@ -36,6 +37,8 @@ class OrganizationController extends Controller
                 'last_error' => null,
             ]
         );
+
+        ParseOrganizationReviews::dispatch($organization);
 
         return response()->json([
             'organization' => $organization,
