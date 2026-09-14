@@ -16,6 +16,8 @@ services:
     volumes:
       - backend_data:/var/www/html
     env_file: ./backend/.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - mysql
 
@@ -25,6 +27,8 @@ services:
     volumes:
       - backend_data:/var/www/html
     env_file: ./backend/.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: php artisan queue:work --tries=3 --sleep=3
     depends_on:
       - mysql
