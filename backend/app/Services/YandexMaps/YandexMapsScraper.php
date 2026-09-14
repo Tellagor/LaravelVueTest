@@ -84,9 +84,20 @@ class YandexMapsScraper
         ];
     }
 
+    private function httpOptions(CookieJar $cookieJar): array
+    {
+        $options = ['cookies' => $cookieJar];
+
+        if ($proxyUrl = config('services.yandex_maps.proxy_url')) {
+            $options['proxy'] = $proxyUrl;
+        }
+
+        return $options;
+    }
+
     private function bootstrapSession(string $reviewsPageUrl, CookieJar $cookieJar): array
     {
-        $response = Http::withOptions(['cookies' => $cookieJar])
+        $response = Http::withOptions($this->httpOptions($cookieJar))
             ->withUserAgent(self::USER_AGENT)
             ->withHeaders(['Accept-Language' => 'ru-RU,ru;q=0.9'])
             ->timeout(20)
@@ -142,7 +153,7 @@ class YandexMapsScraper
 
         $signature = $this->signatureGenerator->generate(http_build_query($params));
 
-        $response = Http::withOptions(['cookies' => $cookieJar])
+        $response = Http::withOptions($this->httpOptions($cookieJar))
             ->withUserAgent(self::USER_AGENT)
             ->withHeaders([
                 'Accept' => 'application/json, text/javascript, */*; q=0.01',

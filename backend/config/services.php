@@ -23,4 +23,8 @@ return [
         ],
     ],
 
+    'yandex_maps' => [
+        'proxy_url' => env('YANDEX_MAPS_PROXY_URL'),
+    ],
+
 ];
