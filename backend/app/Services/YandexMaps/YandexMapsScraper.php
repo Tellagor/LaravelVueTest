@@ -101,6 +101,7 @@ class YandexMapsScraper
             ->withUserAgent(self::USER_AGENT)
             ->withHeaders(['Accept-Language' => 'ru-RU,ru;q=0.9'])
             ->timeout(20)
+            ->retry(3, 500, throw: false)
             ->get($reviewsPageUrl);
 
         if ($response->status() === 429 || $response->status() === 403) {
@@ -161,6 +162,7 @@ class YandexMapsScraper
                 'Referer' => $referer,
             ])
             ->timeout(20)
+            ->retry(3, 500, throw: false)
             ->get('https://yandex.ru/maps/api/business/fetchReviews', [...$params, 's' => $signature]);
 
         if ($response->status() === 429 || $response->status() === 403) {
